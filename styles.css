@@ -1,87 +1,161 @@
-/* General reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-color: #1a1a1a; /* Dark background */
+  color: #ffffff; /* White text */
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
 }
 
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
+a {
+  color: #00ff88; /* Neon green for links */
+  text-decoration: none;
 }
 
-h1 {
-    margin-bottom: 20px;
-    color: #333;
-}
-
-#user-info {
-    margin-bottom: 20px;
-}
-
-#avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-input {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    width: 100%;
+a:hover {
+  color: #00cc66; /* Slightly darker green on hover */
 }
 
 button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #00ff88; /* Neon green for buttons */
+  color: #1a1a1a; /* Dark text */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #45a049;
+  background-color: #00cc66; /* Darker green on hover */
 }
 
-button:disabled {
-    background-color: #ccc;
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #333;
+  border-radius: 5px;
+  background-color: #262626; /* Dark input fields */
+  color: #ffffff;
 }
 
-#logout-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+input:focus, textarea:focus {
+  border-color: #00ff88; /* Neon green border on focus */
+  outline: none;
 }
 
-#logout-btn:hover {
-    background-color: #e04343;
+/* Container Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header Styles */
+h1, h2, h3 {
+  color: #00ff88; /* Neon green for headings */
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Game Card Styles */
+.game {
+  background-color: #262626; /* Dark card background */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+.game a {
+  display: inline-block;
+  margin-top: 10px;
+  color: #00ff88;
+  font-weight: bold;
+}
+
+/* Submission Status Styles */
+.submission {
+  background-color: #262626; /* Dark card background */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.submission p {
+  margin: 5px 0;
+}
+
+/* Admin Approval Styles */
+.pending-submissions .submission {
+  background-color: #333; /* Slightly lighter dark background */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pending-submissions button {
+  margin-right: 10px;
+}
+
+/* User List Styles */
+#last-users .user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#last-users img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* Stats Styles */
+#weekly-visits {
+  font-size: 1.2rem;
+  color: #00ff88; /* Neon green for stats */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
 }

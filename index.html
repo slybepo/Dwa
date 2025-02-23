@@ -1,112 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile Update</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Spezz.Exchange</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>User Profile Update</h1>
-        <div id="user-info">
-            <img id="avatar" src="default-avatar.png" alt="Avatar">
-            <form id="update-form">
-                <div>
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" required>
-                </div>
-                <div>
-                    <label for="password">New Password</label>
-                    <input type="password" id="password" placeholder="Enter new password" required>
-                </div>
-                <div>
-                    <label for="avatar-file">Avatar</label>
-                    <input type="file" id="avatar-file" accept="image/*">
-                </div>
-                <button type="submit">Update Profile</button>
-            </form>
-        </div>
-        <button id="logout-btn">Logout</button>
-    </div>
+  <div class="container">
+    <h1>Welcome to Spezz.Exchange</h1>
+    <button id="logout">Logout</button>
 
-    <script>
-        // Firebase configuration
-        
-            const firebaseConfig = {
-      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
-      authDomain: "nexaverse-eeb07.firebaseapp.com",
-      projectId: "nexaverse-eeb07",
-      storageBucket: "nexaverse-eeb07.appspot.com",
-      messagingSenderId: "686342300627",
-      appId: "1:686342300627:web:90522d8f1129fb00b08526",
-    }; // Your config
-      
-       
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+    <!-- Approved Games Section -->
+    <h2>Approved Games</h2>
+    <div id="games-list"></div>
 
-        // Check if the user is logged in
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                loadUserProfile(user.uid);
-            } else {
-                window.location.href = 'https://dreamweave.lol/auth/login'; // Redirect to login page if not logged in
-            }
+    <!-- Weekly Site Visits -->
+    <h2>Weekly Site Visits</h2>
+    <p id="weekly-visits">Loading...</p>
+
+    <!-- Last Logged-In Users -->
+    <h2>Last Logged-In Users</h2>
+    <div id="last-users"></div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Display Approved Games
+    function displayGames() {
+      db.collection('games').where('status', '==', 'approved').get()
+        .then((querySnapshot) => {
+          const gamesList = document.getElementById('games-list');
+          gamesList.innerHTML = '';
+          querySnapshot.forEach((doc) => {
+            const game = doc.data();
+            gamesList.innerHTML += `
+              <div class="game">
+                <h3>${game.name}</h3>
+                <p>${game.description}</p>
+                <img src="${game.thumbnail}" alt="${game.name}" width="100">
+                <a href="${game.apkFile}" download>Download APK</a>
+              </div>
+            `;
+          });
         });
+    }
 
-        // Load user profile data
-        function loadUserProfile(uid) {
-            const userRef = db.collection('users').doc(uid);
-            userRef.get().then(doc => {
-                if (doc.exists) {
-                    const userData = doc.data();
-                    document.getElementById('username').value = userData.username;
-                    document.getElementById('avatar').src = userData.avatar || 'default-avatar.png';
-                }
-            });
-        }
-
-        // Handle form submission
-        document.getElementById('update-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const uid = auth.currentUser.uid;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const avatarFile = document.getElementById('avatar-file').files[0];
-
-            // Update user information in Firestore
-            const userRef = db.collection('users').doc(uid);
-            await userRef.update({
-                username,
-                password // Update password (ensure it's hashed in real applications)
-            });
-
-            // Upload new avatar if present
-            if (avatarFile) {
-                const avatarRef = storage.ref().child(`avatars/${uid}`);
-                await avatarRef.put(avatarFile);
-                const avatarURL = await avatarRef.getDownloadURL();
-                await userRef.update({ avatar: avatarURL });
-                document.getElementById('avatar').src = avatarURL;
-            }
-
-            alert('Profile updated successfully!');
+    // Display Weekly Site Visits
+    function displayWeeklyVisits() {
+      db.collection('stats').doc('visits').get()
+        .then((doc) => {
+          const weeklyVisits = doc.data().weeklyVisits;
+          document.getElementById('weekly-visits').textContent = weeklyVisits;
         });
+    }
 
-        // Logout function
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            auth.signOut();
-            window.location.href = 'https://dreamweave.lol/auth/login'; // Redirect to login page
+    // Display Last Logged-In Users
+    function displayLastUsers() {
+      db.collection('users').orderBy('lastLogin', 'desc').limit(5).get()
+        .then((querySnapshot) => {
+          const lastUsers = document.getElementById('last-users');
+          lastUsers.innerHTML = '';
+          querySnapshot.forEach((doc) => {
+            const user = doc.data();
+            lastUsers.innerHTML += `
+              <div class="user">
+                <img src="${user.profilePicture}" alt="${user.name}" width="50">
+                <p>${user.name}</p>
+              </div>
+            `;
+          });
         });
-    </script>
+    }
+
+    // Check Auth State
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        displayGames();
+        displayWeeklyVisits();
+        displayLastUsers();
+      }
+    });
+  </script>
 </body>
-  </html>
-  
+</html>

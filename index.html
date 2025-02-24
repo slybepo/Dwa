@@ -2,89 +2,453 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Spezz.Exchange</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spezz Exchange - Main</title>
+  <link rel="icon" type="image/png" href="/peg.jpg">
+  <style>
+    /* Reset and Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Background and Noise Overlay */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.ibb.co/G4W3KmKW/striped-stucco-wall.jpg') center/cover no-repeat;
+      z-index: -3;
+    }
+    .noise-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.imgur.com/BrwJ9te.png') repeat;
+      opacity: 0.1;
+      animation: noiseAnim 2s infinite;
+      z-index: -2;
+    }
+    @keyframes noiseAnim {
+      0% { opacity: 0.1; }
+      50% { opacity: 0.2; }
+      100% { opacity: 0.1; }
+    }
+    /* Navbar */
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff0000;
+    }
+    .navbar .search-container {
+      flex: 1;
+      margin: 0 20px;
+    }
+    .navbar .search-container input {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .navbar .nav-links a {
+      margin-left: 15px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .navbar .nav-links a:hover {
+      color: #ff0000;
+    }
+    /* Main Content */
+    .container {
+      padding: 40px 20px;
+      max-width: 1200px;
+      width: 95%;
+      margin: 80px auto 20px;
+    }
+    h1.main-title {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 48px;
+      color: #ff0000;
+      text-shadow: 2px 2px 8px #000;
+    }
+    /* Approved Games */
+    .game-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .game-card {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 10px #ff0000;
+    }
+    .game-card img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    .game-card h3 {
+      margin-bottom: 10px;
+    }
+    .game-card p {
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .game-card a {
+      display: inline-block;
+      padding: 8px 12px;
+      background: #ff0000;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .game-card a:hover {
+      background: #cc0000;
+    }
+    /* Submission Form */
+    .submission-form {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ff0000;
+      margin-bottom: 40px;
+    }
+    .submission-form h2 {
+      margin-bottom: 10px;
+      font-size: 32px;
+      color: #ff0000;
+    }
+    .submission-form input,
+    .submission-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .submission-form button {
+      padding: 10px 20px;
+      background: #ff0000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .submission-form button:hover {
+      background: #cc0000;
+    }
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ff0000;
+      max-width: 300px;
+      width: 90%;
+    }
+    .sidebar h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #ff0000;
+    }
+    .sidebar .user-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .sidebar .user-item img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      text-align: center;
+      width: 100%;
+      border-top: 1px solid #444;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to Spezz.Exchange</h1>
-    <button id="logout">Logout</button>
+  <div class="background"></div>
+  <div class="noise-overlay"></div>
 
-    <!-- Approved Games Section -->
-    <h2>Approved Games</h2>
-    <div id="games-list"></div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Spezz.Exchange</div>
+    <div class="search-container">
+      <input type="text" id="searchBar" placeholder="Search games...">
+    </div>
+    <div class="nav-links">
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="submissions.html">My Submissions</a>
+    </div>
+  </nav>
 
-    <!-- Weekly Site Visits -->
-    <h2>Weekly Site Visits</h2>
-    <p id="weekly-visits">Loading...</p>
+  <!-- Main Content -->
+  <main class="container">
+    <h1 class="main-title">Approved Games</h1>
+    <div id="gameList" class="game-list">
+      <!-- Approved game cards will be loaded here -->
+    </div>
 
-    <!-- Last Logged-In Users -->
-    <h2>Last Logged-In Users</h2>
-    <div id="last-users"></div>
-  </div>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
-  <script src="app.js"></script>
-  <script>
-    // Display Approved Games
-    function displayGames() {
-      db.collection('games').where('status', '==', 'approved').get()
-        .then((querySnapshot) => {
-          const gamesList = document.getElementById('games-list');
-          gamesList.innerHTML = '';
-          querySnapshot.forEach((doc) => {
-            const game = doc.data();
-            gamesList.innerHTML += `
-              <div class="game">
+    <!-- Game Submission Form -->
+    <section class="submission-form" id="submissionForm">
+      <h2>Submit Your Game</h2>
+      <input type="text" id="gameName" placeholder="Game Name">
+      <textarea id="gameDesc" placeholder="Game Description"></textarea>
+      <input type="text" id="gameThumbnail" placeholder="Thumbnail URL">
+      <input type="file" id="gameApk">
+      <button onclick="submitGame()">Submit for Approval</button>
+    </section>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>Weekly Visits</h3>
+    <p>Coming Soon...</p>
+    <h3>Latest Users</h3>
+    <p>Coming Soon...</p>
+  </aside>
+
+  <footer>
+    <p>&copy; 2025 Spezz Exchange</p>
+  </footer>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+
+// 🔥 Firebase Config
+const firebaseConfig = {
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
+    }; // Your config
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// 🏆 Weekly Visits Counter
+async function updateWeeklyVisits() {
+    const visitsRef = doc(db, "stats", "weeklyVisits");
+    const visitsSnap = await getDocs(collection(db, "stats"));
+
+    let visits = visitsSnap.empty ? 1 : visitsSnap.docs[0].data().count + 1;
+
+    await updateDoc(visitsRef, { count: visits }).catch(() => addDoc(collection(db, "stats"), { count: visits }));
+    document.getElementById("weeklyVisits").textContent = visits;
+}
+updateWeeklyVisits();
+
+// 👥 Get Latest Logged-In Users
+async function getLatestUsers() {
+    const usersRef = collection(db, "users");
+    const userSnap = await getDocs(usersRef);
+
+    let usersHTML = "";
+    userSnap.forEach((doc) => {
+        const user = doc.data();
+        usersHTML += `
+            <div class="user">
+                <img src="${user.profilePic}" alt="Profile">
+                <span>${user.name}</span>
+            </div>`;
+    });
+
+    document.getElementById("latestUsers").innerHTML = usersHTML;
+}
+getLatestUsers();
+
+// 🎮 Submit Game For Approval
+document.getElementById("submitGameBtn").addEventListener("click", async () => {
+    const gameName = document.getElementById("gameName").value.trim();
+    const gameDesc = document.getElementById("gameDesc").value.trim();
+    const gameThumbnail = document.getElementById("gameThumbnail").value.trim();
+    const gameApk = document.getElementById("gameApk").files[0];
+
+    if (!gameName || !gameDesc || !gameThumbnail || !gameApk) {
+        showNotification("All fields are required!", "error");
+        return;
+    }
+
+    const gameData = {
+        name: gameName,
+        description: gameDesc,
+        thumbnail: gameThumbnail,
+        apk: URL.createObjectURL(gameApk),
+        status: "pending"
+    };
+
+    await addDoc(collection(db, "submissions"), gameData);
+    showNotification("Game submitted for approval!", "success");
+});
+
+// 🏆 Admin: Approve/Reject Submissions
+async function loadSubmissions() {
+    const submissionsRef = collection(db, "submissions");
+    const submissionSnap = await getDocs(submissionsRef);
+
+    let submissionsHTML = "";
+    submissionSnap.forEach((doc) => {
+        const game = doc.data();
+        submissionsHTML += `
+            <div class="submission">
                 <h3>${game.name}</h3>
                 <p>${game.description}</p>
-                <img src="${game.thumbnail}" alt="${game.name}" width="100">
-                <a href="${game.apkFile}" download>Download APK</a>
-              </div>
-            `;
-          });
-        });
-    }
-
-    // Display Weekly Site Visits
-    function displayWeeklyVisits() {
-      db.collection('stats').doc('visits').get()
-        .then((doc) => {
-          const weeklyVisits = doc.data().weeklyVisits;
-          document.getElementById('weekly-visits').textContent = weeklyVisits;
-        });
-    }
-
-    // Display Last Logged-In Users
-    function displayLastUsers() {
-      db.collection('users').orderBy('lastLogin', 'desc').limit(5).get()
-        .then((querySnapshot) => {
-          const lastUsers = document.getElementById('last-users');
-          lastUsers.innerHTML = '';
-          querySnapshot.forEach((doc) => {
-            const user = doc.data();
-            lastUsers.innerHTML += `
-              <div class="user">
-                <img src="${user.profilePicture}" alt="${user.name}" width="50">
-                <p>${user.name}</p>
-              </div>
-            `;
-          });
-        });
-    }
-
-    // Check Auth State
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        window.location.href = 'login.html';
-      } else {
-        displayGames();
-        displayWeeklyVisits();
-        displayLastUsers();
-      }
+                <button onclick="approveGame('${doc.id}')">Approve</button>
+                <button onclick="rejectGame('${doc.id}')">Reject</button>
+            </div>`;
     });
+
+    document.getElementById("adminPanel").innerHTML = submissionsHTML;
+}
+async function approveGame(id) {
+    await updateDoc(doc(db, "submissions", id), { status: "approved" });
+    showNotification("Game Approved!", "success");
+    loadSubmissions();
+}
+async function rejectGame(id) {
+    await deleteDoc(doc(db, "submissions", id));
+    showNotification("Game Rejected!", "error");
+    loadSubmissions();
+}
+
+// 🎮 Display Approved Games
+async function loadApprovedGames() {
+    const gamesRef = collection(db, "submissions");
+    const gamesSnap = await getDocs(gamesRef);
+
+    let gamesHTML = "";
+    gamesSnap.forEach((doc) => {
+        const game = doc.data();
+        if (game.status === "approved") {
+            gamesHTML += `
+                <div class="game-card">
+                    <img src="${game.thumbnail}" alt="${game.name}">
+                    <h3>${game.name}</h3>
+                    <p>${game.description}</p>
+                    <a href="${game.apk}" download>Download</a>
+                </div>`;
+        }
+    });
+
+    document.getElementById("gameList").innerHTML = gamesHTML;
+}
+loadApprovedGames();
+
+// 🔎 Search Bar Functionality
+document.getElementById("searchBar").addEventListener("input", function () {
+    const query = this.value.toLowerCase();
+    const games = document.querySelectorAll(".game-card");
+
+    games.forEach((game) => {
+        const title = game.querySelector("h3").textContent.toLowerCase();
+        game.style.display = title.includes(query) ? "block" : "none";
+    });
+});
+
+// 🔔 Custom Notifications
+function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.classList.add("notification", type);
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// 🛑 Login / Register System
+document.getElementById("registerBtn").addEventListener("click", async () => {
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+    const name = document.getElementById("regName").value;
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await addDoc(collection(db, "users"), { name, email, profilePic: "default.png" });
+
+        showNotification("Account Created!", "success");
+        window.location.href = "login.html";
+    } catch (error) {
+        showNotification(error.message, "error");
+    }
+});
+document.getElementById("loginBtn").addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showNotification("Logged In!", "success");
+        window.location.href = "index.html";
+    } catch (error) {
+        showNotification(error.message, "error");
+    }
+});
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    showNotification("Logged Out!", "info");
+    window.location.href = "login.html";
+});
+
+// 🔥 Ensure User is Logged In
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        document.getElementById("userName").textContent = user.displayName || "User";
+    } else {
+        window.location.href = "login.html";
+    }
+});
   </script>
+  
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Register - Spezz Exchange</title>
+  <title>Login - Spezz Exchange</title>
   <link rel="icon" type="image/png" href="/peg.jpg">
   <style>
     /* Global Reset and Styles */
@@ -49,23 +49,20 @@
 </head>
 <body>
   <div class="container">
-    <h1>Register</h1>
-    <input type="text" id="regUsername" placeholder="Username">
-    <input type="email" id="regEmail" placeholder="Email">
-    <input type="password" id="regPassword" placeholder="Password">
-    <input type="file" id="regPfp" accept="image/*">
-    <button id="registerBtn">Register</button>
-    <p>Already have an account? <a href="login.html" style="color:#ff0000;">Login</a></p>
-    <div id="regNotification" class="notification" style="display:none;"></div>
+    <h1>Login</h1>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <p>Don't have an account? <a href="register.html" style="color:#ff0000;">Register</a></p>
+    <div id="loginNotification" class="notification" style="display:none;"></div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js"></script>
   <script>
     // Firebase configuration (replace with your actual config)
-const firebaseConfig = {
+    const firebaseConfig = {
       apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
       authDomain: "nexaverse-eeb07.firebaseapp.com",
       projectId: "nexaverse-eeb07",
@@ -75,41 +72,17 @@ const firebaseConfig = {
     }; // Your config
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
 
-    document.getElementById("registerBtn").addEventListener("click", async () => {
-      const username = document.getElementById("regUsername").value.trim();
-      const email = document.getElementById("regEmail").value.trim();
-      const password = document.getElementById("regPassword").value;
-      const file = document.getElementById("regPfp").files[0];
-
-      if (!username || !email || !password || !file) {
-        showNotification("Please fill in all fields.", "error");
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      if (!email || !password) {
+        showNotification("Please enter email and password.", "error");
         return;
       }
-
       try {
-        // Create user in Firebase Auth
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        const uid = userCredential.user.uid;
-
-        // Upload profile picture to Firebase Storage
-        const storageRef = storage.ref().child("profilePictures/" + uid);
-        await storageRef.put(file);
-        const profilePicUrl = await storageRef.getDownloadURL();
-
-        // Create user document in Firestore with role 'user'
-        await db.collection("users").doc(uid).set({
-          name: username,
-          email: email,
-          profilePic: profilePicUrl,
-          role: "user",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        // Optionally, update last registered list (e.g. store in a collection or use query order)
-        showNotification("Registration successful!", "success");
+        await auth.signInWithEmailAndPassword(email, password);
+        showNotification("Login successful!", "success");
         setTimeout(() => {
           window.location.href = "main.html";
         }, 2000);
@@ -119,7 +92,7 @@ const firebaseConfig = {
     });
 
     function showNotification(message, type) {
-      const notif = document.getElementById("regNotification");
+      const notif = document.getElementById("loginNotification");
       notif.textContent = message;
       notif.className = "notification " + type;
       notif.style.display = "block";

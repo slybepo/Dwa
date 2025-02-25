@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit an App</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
+        .container { background: #fff; padding: 20px; max-width: 500px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h2 { color: #333; }
+        input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #28a745; color: white; cursor: pointer; }
+        button:hover { background: #218838; }
+        #submissionStatus { font-weight: bold; color: red; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Submit an App</h2>
+        <div id="submissionStatus"></div>
+        <form id="appForm">
+            <input type="text" id="appName" placeholder="App Name" required>
+            <textarea id="appDescription" placeholder="App Description" required></textarea>
+            <input type="text" id="appTags" placeholder="Tags (comma-separated)" required>
+            <input type="text" id="thumbnail" placeholder="Thumbnail Link (URL)" required>
+            <input type="file" id="apkFile" accept=".apk" required>
+            <input type="text" id="creatorName" placeholder="Creator Name" required>
+            <input type="text" id="creatorWebsite" placeholder="Creator Website (Optional)">
+            <input type="email" id="email" placeholder="Your Email" required>
+            <button type="submit">Submit App</button>
+        </form>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
+    }; // Your config
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                alert("You must be logged in!");
+                window.location.href = "login.html";
+            } else {
+                checkUserSubmission(user.uid);
+            }
+        });
+
+        async function checkUserSubmission(uid) {
+            const submission = await db.collection("submissions").where("userId", "==", uid).where("status", "==", "pending").get();
+            if (!submission.empty) {
+                document.getElementById("submissionStatus").innerText = "Your submission is sent for approval. Please wait.";
+                document.getElementById("appForm").style.display = "none";
+            }
+        }
+
+        document.getElementById("appForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const appName = document.getElementById("appName").value;
+            const appDescription = document.getElementById("appDescription").value;
+            const appTags = document.getElementById("appTags").value;
+            const thumbnail = document.getElementById("thumbnail").value;
+            const apkFile = document.getElementById("apkFile").files[0];
+            const creatorName = document.getElementById("creatorName").value;
+            const creatorWebsite = document.getElementById("creatorWebsite").value;
+            const email = document.getElementById("email").value;
+
+            const apkRef = storage.ref(`apks/${user.uid}-${apkFile.name}`);
+            await apkRef.put(apkFile);
+            const apkUrl = await apkRef.getDownloadURL();
+
+            await db.collection("submissions").add({
+                userId: user.uid,
+                appName,
+                appDescription,
+                appTags,
+                thumbnail,
+                apkUrl,
+                creatorName,
+                creatorWebsite,
+                email,
+                status: "pending",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert("Your app has been submitted for approval!");
+            window.location.reload();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Submissions</title>
+</head>
+<body>
+
+    <h2>Pending Submissions</h2>
+    <div id="submissionsList"></div>
+
+    <script>
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (!user) {
+                alert("You must be logged in as an admin!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+            if (!userDoc.exists || userDoc.data().role !== "admin") {
+                alert("Access Denied. Admins only.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            const submissionsList = document.getElementById("submissionsList");
+            const submissions = await firebase.firestore().collection("submissions").where("status", "==", "pending").get();
+            submissions.forEach(doc => {
+                const data = doc.data();
+                submissionsList.innerHTML += `
+                    <div>
+                        <h3>${data.appName}</h3>
+                        <p>${data.appDescription}</p>
+                        <button onclick="approve('${doc.id}')">Approve</button>
+                        <button onclick="reject('${doc.id}')">Reject</button>
+                    </div>
+                `;
+            });
+        });
+
+        async function approve(id) {
+            await firebase.firestore().collection("submissions").doc(id).update({ status: "approved" });
+            alert("App approved!");
+            window.location.reload();
+        }
+
+        async function reject(id) {
+            const reason = prompt("Enter rejection reason:");
+            if (!reason) return;
+            await firebase.firestore().collection("submissions").doc(id).update({ status: "rejected", rejectionReason: reason });
+            alert("App rejected!");
+            window.location.reload();
+        }
+    </script>
+
+</body>
+</html>
